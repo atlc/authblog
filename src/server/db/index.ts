@@ -1,5 +1,6 @@
 import * as mysql from 'mysql';
 import config from '../config';
+import Blogs from './queries/blogs';
 import Users from './queries/users';
 import Tokens from './queries/authtokens';
 
@@ -15,6 +16,7 @@ export const Query = <T = any>(query: any, values?: any) => {
 }
 
 export default {
+    Blogs,
     Users,
     Tokens
 }

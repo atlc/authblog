@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 
-const rawSql = fs.readFileSync(path.join(__dirname, './create_db.sql'), err => err ? console.log(err) : '');
+const rawSql = fs.readFileSync(path.join(__dirname, './create_db.sql'), (err: Error) => err ? console.log(err) : '');
 const sqlString = rawSql.toString();
 
 const generator = () => {

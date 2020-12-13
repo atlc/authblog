@@ -15,19 +15,20 @@ CREATE TABLE Users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-INSERT INTO Users (firstname, lastname, email, password, roles) VALUES ("Andrew", "Cartwright", "me@example.com", "hunter2", "[\"user\",\"admin\",\"superadmin\"]");
+INSERT INTO Users (firstname, lastname, email, password, roles) VALUES ("Andrew", "Cartwright", "me@example.com", "$2b$10$H1JKIweGIZ7e4LNmC7Dzt.zfGDXiBkldpQYXWsjv5DIvhxa/iwT96", "[\"user\",\"admin\",\"superadmin\"]");
 
 
 DROP TABLE IF EXISTS authtokens;
 CREATE TABLE authtokens (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     userid INT NOT NULL,
-    token TEXT NOT NULL,
+    token TEXT,
 	expires_at DATETIME,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userid) REFERENCES Users(id)
 );
 INSERT INTO authtokens (userid, token) VALUES (1, "aaaaaaaaahhhhhhhhhhhhhh");
+INSERT INTO authtokens (userid) VALUES (1);
 
 DROP TABLE IF EXISTS Blogs;
 CREATE TABLE Blogs (
@@ -117,3 +118,7 @@ delimiter $$
 			END IF;
 END $$
 delimiter ;
+
+SELECT * FROM authtokens WHERE userid = 1;
+
+
