@@ -1,31 +1,5 @@
-### fsjs-atlc
+### But wait, there's more!
 
-Weird name, and weird config. Just trying to establish a good personal **F**ull**s**tack **J**ava**S**cript boilerplate for use by [**@atlc**](https://github.com/atlc).
+Blogs lab again, this time with auth.
 
-Stack includes React, Typescript, Express, Redux, MySQL. Going to attempt to wean off bootstrap and use another css framework/toolkit, like Tailwind.
-
----
-
-Architecture (just most of the backend bare structureplanned so far):
-
-**src** 📁
-- ↪ **server** 📁
-    - ↪ **config** 📁
-      - *index.ts*
-    - ↪ **db** 📁
-      - ↪ **queries** 📁
-      - *index.ts*
-    - ↪ **middleware** 📁
-          - *index.ts*
-    - ↪ **routes** 📁
-      - ↪ **api** 📁
-      - ↪ **auth** 📁
-          - *index.ts*
-          - *login.ts*
-          - *register.ts*
-      - *index.ts*
-    - ↪ **utils** 📁
-      - ↪ **security** 📁
-        - *passwords.ts*
-        - *tokens.ts*
-    - ***server.ts***
+There's a SQL file in `src/server/utils` that shows the structure of my db setup and can be run independently in your DB frontend of choice, or there's also a helper module you can run with `npx ts-node src/server/utils/execute_sql.ts` to take care of building + populating the DB automatically. You may need to initially create the schema itself; after that you can run the script.
