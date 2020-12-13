@@ -14,7 +14,5 @@ const generator = () => {
     })
     .catch(error => console.log(error));
 }
-    
-
 
 generator();

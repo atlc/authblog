@@ -8,7 +8,7 @@ CREATE TABLE Users (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     firstname VARCHAR(32) NOT NULL,
     lastname VARCHAR(32) NOT NULL,
-    email VARCHAR(64) NOT NULL,
+    email VARCHAR(64) NOT NULL UNIQUE,
     avatar VARCHAR(128),
     password VARCHAR(64) NOT NULL,
     roles VARCHAR(64) NOT NULL DEFAULT "guest", -- // Going to be stringified array of permissions: guest, user, ???, admin, superadmin
@@ -20,12 +20,14 @@ INSERT INTO Users (firstname, lastname, email, password, roles) VALUES ("Andrew"
 
 DROP TABLE IF EXISTS authtokens;
 CREATE TABLE authtokens (
-	id int NOT NULL,
-    userid int NOT NULL,
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    userid INT NOT NULL,
     token TEXT NOT NULL,
+	expires_at DATETIME,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userid) REFERENCES Users(id)
 );
-
+INSERT INTO authtokens (userid, token) VALUES (1, "aaaaaaaaahhhhhhhhhhhhhh");
 
 DROP TABLE IF EXISTS Blogs;
 CREATE TABLE Blogs (
