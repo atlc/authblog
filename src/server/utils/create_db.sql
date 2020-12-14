@@ -119,6 +119,8 @@ delimiter $$
 END $$
 delimiter ;
 
-SELECT * FROM authtokens WHERE userid = 1;
+SELECT * FROM authtokens WHERE userid = '1';
+SELECT * FROM Users;
+SELECT * FROM Users WHERE email = 'me2@example.com';
 
 
