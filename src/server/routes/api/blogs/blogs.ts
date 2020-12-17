@@ -1,5 +1,5 @@
 import * as express from 'express';
-import DB from '../../db';
+import db from '../../../db';
 
 const router = express.Router();
 
@@ -15,9 +15,11 @@ const hasAccess: express.RequestHandler = (req: any, res, next) => {
 }
 
 
+// Allow guests (anyone currently not logged in) to see all blogs as a preview (to truncate each)
 router.get('/', async (req, res) => {
     try {
-        const blogs = await DB.Blogs.get.all();
+        const blogs = await db.Blogs.get.all();
+        console.log(blogs);
         res.status(200).send(blogs);
     } catch (e) {
         console.log(e);
@@ -29,7 +31,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', hasAccess, async (req, res) => {
     try {
         const id_dto = Number(req.params?.id);
-        const blogs = id_dto ? await DB.Blogs.get.blog_by_id(id_dto) : await DB.Blogs.get.all();
+        const blogs = id_dto ? await db.Blogs.get.blog_by_id(id_dto) : await db.Blogs.get.all();
         res.status(200).send(blogs);
     } catch (e) {
         console.log(e);
@@ -37,10 +39,11 @@ router.get('/:id', hasAccess, async (req, res) => {
     }
 });
 
+// Allows authenticated users to see all blogs by a user at /api/blogs/user/:userid
 router.get('/user/:userid', hasAccess, async (req, res) => {
     try { 
         const userid_dto = req.params?.userid;
-        const userblogs = await DB.Blogs.get.blogs_by_user(userid_dto);
+        const userblogs = await db.Blogs.get.blogs_by_user(userid_dto);
         res.status(200).send(userblogs);
     } catch (e) {
         console.log(e); 
