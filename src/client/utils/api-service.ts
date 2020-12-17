@@ -17,24 +17,21 @@ export default async <T = any>(uri: string, method: string = 'GET', body?: {}) =
     if (Token) headers.append('Authorization', `Bearer ${Token}`);
 
     try {
-        // const res = await fetch(uri, {
-        //     method,
-        //     headers,
-        //     ...(body) && body
-        // });
-        // const data = await res.json();
-
         const res = await fetch(uri, options);
 
-        switch(true) {
-            case (res.status >= 500):
-                throw new Error('My code sucks, server error!');
-            case (res.status === 401):
-                throw new Error('Token invalid or not found!');
-        }
+        // switch(true) {
+        //     case (Number(res.status) >= 500):
+        //         throw new Error('My code sucks, server error!');
+        //     case (Number(res.status) >= 401 && Number(res.status) < 500):
+        //         throw new Error('Token invalid or not found!');
+        //     case (Number(res.status) >= 200 && Number(res.status) < 400):
+        //         return await res.json();    
+        // }
 
-        if (res.ok) return await res.json();
-
+        if (!res.ok) throw new Error('Server error.');
+        
+        const data = await res.json();
+        console.log(data);
     } catch (e) {
         console.log(e)
     }

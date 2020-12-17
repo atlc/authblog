@@ -15,7 +15,7 @@ CREATE TABLE Users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-INSERT INTO Users (firstname, lastname, email, password, roles) VALUES ("Andrew", "Cartwright", "me@example.com", "$2b$10$H1JKIweGIZ7e4LNmC7Dzt.zfGDXiBkldpQYXWsjv5DIvhxa/iwT96", "[\"user\",\"admin\",\"superadmin\"]");
+INSERT INTO Users (firstname, lastname, email, password, roles) VALUES ("Andrew", "Cartwright", "me@example.com", "hunter2", "[\"user\",\"admin\",\"superadmin\"]");
 
 
 DROP TABLE IF EXISTS authtokens;
@@ -119,7 +119,7 @@ delimiter $$
 END $$
 delimiter ;
 
-SELECT * FROM authtokens WHERE userid = '1';
+SELECT * FROM authtokens WHERE userid = '2';
 SELECT * FROM Users;
 SELECT * FROM Users WHERE email = 'me2@example.com';
 

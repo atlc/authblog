@@ -14,8 +14,8 @@ router.post('/', async (req, res, next) => {
         
         const hash = HashPassword(password);
         const newUser = await DB.Users.do.create(firstname, lastname, email, hash, roles)
-        
-        res.status(201).send(newUser.insertId);
+                
+        res.status(201).json(newUser.insertId);
     } catch (e) {
         console.log(e);
         res.status(500).send(e);

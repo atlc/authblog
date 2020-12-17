@@ -7,7 +7,7 @@ export const CreateToken = async (payload: IPayload) => {
     let tokenid: any = await DB.Tokens.go.insert(payload.userid);
     payload.accesstokenid = tokenid.insertId;
     payload.unique = crypto.randomBytes(32).toString('hex');
-    let token = await jwt.sign(payload, config.auth.secret);
+    let token = await jwt.sign(payload, config.auth.secret, { expiresIn: config.auth.expires }); // Set token to expire after 2 weeks
     await DB.Tokens.go.update(payload.accesstokenid, token);
     return token;
 };
@@ -21,6 +21,16 @@ export const ValidToken = async (token: string) => {
         return accesstokenid;
     }
 }
+
+export const InvalidateToken = async (token: string) => {
+
+}
+
+export const NuclearOption = async () => {
+    // Change config.auth.secret to invalidate ALL tokens
+}
+
+
 
 export interface IPayload {
     [key: string]: any,
