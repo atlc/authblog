@@ -27,7 +27,8 @@ export const InvalidateToken = async (token: string) => {
 }
 
 export const NuclearOption = async () => {
-    // Change config.auth.secret to invalidate ALL tokens
+    // Change config.auth.secret to invalidate ALL tokens, or
+    // DELETE FROM authtokens WHERE id IS NOT NULL;
 }
 
 

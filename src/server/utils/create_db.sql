@@ -11,7 +11,7 @@ CREATE TABLE Users (
     email VARCHAR(64) NOT NULL UNIQUE,
     avatar VARCHAR(128),
     password VARCHAR(64) NOT NULL,
-    roles VARCHAR(64) NOT NULL DEFAULT "guest", -- // Going to be stringified array of permissions: guest, user, ???, admin, superadmin
+    roles VARCHAR(64) NOT NULL DEFAULT "[\"user\"]", -- // Going to be stringified array of permissions: guest, user, ???, admin, superadmin
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -119,8 +119,6 @@ delimiter $$
 END $$
 delimiter ;
 
-SELECT * FROM authtokens WHERE userid = '2';
 SELECT * FROM Users;
 SELECT * FROM Users WHERE email = 'me2@example.com';
-
-
+SELECT * FROM authtokens;

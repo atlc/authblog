@@ -13,9 +13,13 @@ router.post('/', async (req, res, next) => {
         if (!!(isNewUser[0])) return res.status(403).send(`An account using the email address ${email} already exists.`);
         
         const hash = HashPassword(password);
-        const newUser = await DB.Users.do.create(firstname, lastname, email, hash, roles)
-                
-        res.status(201).json(newUser.insertId);
+        const newUser = await DB.Users.do.create(firstname, lastname, email, hash, roles ? roles : "[\"user\"]")
+        if (newUser.insertId) {
+            res.status(201).json('User was created successfully!');
+        } else {
+            res.status(400).json('There was an unknown issue creating the user. Please check the server logs for additional details.');
+            console.log(newUser);
+        }
     } catch (e) {
         console.log(e);
         res.status(500).send(e);

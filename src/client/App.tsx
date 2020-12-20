@@ -1,21 +1,50 @@
-import  React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { HashRouter, Route, Switch } from 'react-router-dom';
+import Navbar from './components/nav/Navbar';
+import { Home } from './views/Home';
+import AllBlogs from './views/blogs/AllBlogs';
+import SingleBlog from './views/blogs/SingleBlog';
+import EditableBlog from './views/blogs/EditableBlog';
+import CreateBlog from './views/blogs/CreateBlog';
+import Login from './views/auth/Login';
+import Register from './views/auth/Register';
 
 const App = (props: AppProps) => {
-	const [greeting, setGreeting] = useState(null);
-
-	useEffect(() => {
-		(async () => {
-			setGreeting('Home')
-		})();
-	}, []);
-
 	return (
-		<div className="min-vh-100 d-flex justify-content-center align-items-center">
-			<h1 className="display-1">{greeting || 'Loading'}</h1>
-		</div>
+		<HashRouter>
+			<Navbar />
+			<div className="container mt-5 pt-3">
+				<Switch>
+					<Route exact path="/">
+						<Home />
+					</Route>
+					<Route exact path="/blogs/create">
+						<CreateBlog />
+					</Route>
+					<Route exact path="/blogs">
+						<AllBlogs />
+					</Route>
+					<Route path="/blogs/:id/edit">
+						<EditableBlog />
+					</Route>
+					<Route path="/blogs/:id">
+						<SingleBlog />
+					</Route>
+					<Route path="/login">
+						<Login />
+					</Route>
+					<Route path="/register">
+						<Register />
+					</Route>
+					<Route path="*">
+						<Home />
+					</Route>
+				</Switch>
+			</div>
+		</HashRouter>
 	);
 };
 
-interface AppProps {}
+interface AppProps { }
 
 export default App;

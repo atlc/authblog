@@ -1,5 +1,8 @@
 $theme-colors: (
-    'primary': #0091ea //Covalence Blue!  :D
+    'primary': #0091ea, //Covalence Blue!  :D
+    'secondary': rgb(236, 64, 122), // Covalence Pink
+    'warning': rgb(255, 171, 0) // Cova Yellow
+
 );
 
 @import '../../../node_modules/bootstrap/scss/bootstrap.scss';
