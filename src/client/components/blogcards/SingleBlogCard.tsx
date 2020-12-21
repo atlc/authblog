@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import TagSelector from '../selectors/TagSelector';
 
 const SingleBlogCard = (props: IBlogs) => {
-    const { title, content, updated_at, id, AuthorName, AuthorEmail } = props;
+    const { title, content, updated_at, id, AuthorName, AuthorEmail } = props[0];
     // console.log(props);
     const [blogtags, updateMyTags] = useState([]);
 
@@ -18,10 +18,10 @@ const SingleBlogCard = (props: IBlogs) => {
         (async () => {
             try {
                 const res = await api(`/api/blogtags/${id}`);
-                console.log(res)
-                let tags = res.json();
+                let tags = await res.json();
                 // Returning just the data I want without the SQL response since this calls a stored procedure
                 tags = tags[0].map((tag: IBlogTags) => tag.name);
+                console.log(tags);
                 updateMyTags(tags);
             } catch (error) {
                 console.log(error);

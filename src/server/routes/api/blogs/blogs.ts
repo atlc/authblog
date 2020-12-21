@@ -73,6 +73,17 @@ router.get('/:id?/edit', hasAdmin, async (req, res, next) => {
     }
 });
 
+router.post('/', hasAccess, async (req, res, next) => {
+    try {
+        const blog = req.body;
+        const { userid, title, content } = blog;
+        const newBlog = await db.Blogs.do.create_new(title, content, userid);
+        res.status(201).json({'blog': newBlog})
+    } catch (e) {
+        console.log(e);
+    }
+});
+
 
 
 export default router;

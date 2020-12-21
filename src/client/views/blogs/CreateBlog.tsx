@@ -17,6 +17,8 @@ const CreateBlog = () => {
     useEffect(() => {
         if (!User || User.userid === null || !User.roles.includes('user')) {
             history.replace('/login');
+        } else {
+            updateBlogAuthor(User.userid)
         }
     }, [])
 
@@ -25,20 +27,19 @@ const CreateBlog = () => {
 
     const createBlog = async () => {
         // Inserts the info into the blog itself
-        const body: {} = JSON.stringify({
-            // userid: blogAuthor.value,
-            userid: 1,
+        const body: {} = {
+            userid: blogAuthor,
             title: blogTitle,
             content: blogText
-        });
+        };
 
-        const newBlog = await api('/api/blogs', 'POST', body)
+        const newBlog = await api('/api/blogs', 'POST', body);
         const blogID = await newBlog.insertId;
         const blogPostStatus = newBlog.status;
         console.log(newBlog, newBlog.status);
 
         // Inserts the info into the blogtags table
-        const blogTags: {} = JSON.stringify({ blogtags_array: createBulkFriendlyBlogTagsSQL(blogID) });
+        const blogTags: {} = { blogtags_array: createBulkFriendlyBlogTagsSQL(blogID) };
 
         const newTags = await api('/api/blogtags', 'POST', blogTags)
         const blogTagsPostStatus = newTags.status;
@@ -76,12 +77,17 @@ const CreateBlog = () => {
                     <textarea className="text-dark" value={blogText} rows={10} cols={80} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => updateBlogText(e.target.value)}></textarea>
                 </div>
                 <div className="card-footer bg-primary">
-                    <div className="row">
-                        <h5>Select your author:  </h5>
-                    </div>
-                    <div className="row">
-                        <AuthorSelector onSelectChange={(authorFromChild: any) => updateBlogAuthor(authorFromChild)} />
-                    </div>
+                    {(User && User.userid !== null && User.roles.includes('superadmin')) ?
+                        <>
+                            <div className="row">
+                                <h5>Select your author:  </h5>
+                            </div>
+                            <div className="row">
+                                <AuthorSelector onSelectChange={(authorFromChild: any) => updateBlogAuthor(authorFromChild)} />
+                            </div>
+                        </>
+                        : <></>
+                    }
                     <div className="row">
                         <h5>Tags: </h5>
                     </div>

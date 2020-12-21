@@ -30,7 +30,6 @@ const EditableBlogCard = (props: IBlogs) => {
         const tags_array: {} = JSON.stringify({ blogtags_array: createBulkFriendlyBlogTagsSQL(id) });
         
         const blogtags = await api(`/api/blogtags/update/${id}`, 'POST', tags_array);
-        console.log(blogtags);
     }
 
     const deleteBlog = () => {

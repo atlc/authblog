@@ -15,10 +15,12 @@ export type IBlogTags = {
     name: string;
 }
 
-export type IAuthors = {
+export type IUsers = {
     id: string;
-    name: string;
+    firstname: string;
+    lastname: string;
     email: string;
+    avatar: string;
     created_at: string;
     updated_at: string;
 }

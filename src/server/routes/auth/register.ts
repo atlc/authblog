@@ -18,7 +18,6 @@ router.post('/', async (req, res, next) => {
             res.status(201).json('User was created successfully!');
         } else {
             res.status(400).json('There was an unknown issue creating the user. Please check the server logs for additional details.');
-            console.log(newUser);
         }
     } catch (e) {
         console.log(e);

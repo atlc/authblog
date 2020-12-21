@@ -15,7 +15,6 @@ router.get('/:id?', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
     try {
         const blogtags_array = req.body.blogtags_array;
-        console.log(blogtags_array);
         const blogtags = await db.BlogTags.do.create_new(blogtags_array);
         res.status(200).send(blogtags);
     } catch (e) {

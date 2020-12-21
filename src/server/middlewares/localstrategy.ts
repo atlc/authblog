@@ -13,7 +13,6 @@ passport.use(new LocalStrategy.Strategy({
     try {
         let [user]: any = await DB.Users.get.user_by_email(email);
         HashPassword(password);
-        console.log(user)
         if (user && ComparePassword(password, user.password)) {
             delete user.password;
             done(null, user);

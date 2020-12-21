@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
-import { IAuthors } from '../../utils/types';
+import { IUsers } from '../../utils/types';
 import { api } from '../../utils/api-service';
 
 
 const AuthorSelector = (props: AuthorSelectorProps) => {
     const { onSelectChange } = props; // Allows us to propagate the state of current selected authors up to parent functions/components
-    const [fullAuthorsList, updateAuthors] = useState<IAuthors[]>(null); // Sets state to a retrieval of all author info in the Authors table
+    const [fullAuthorsList, updateAuthors] = useState<IUsers[]>(null); // Sets state to a retrieval of all author info in the Authors table
     const [selectedAuthor, updateSelectedAuthor] = useState(null); // Sets state to the currently selected author
 
     useEffect(() => {
         (async () => {
             const res = await api('/api/users');
-            let authors: IAuthors[] = await res.json();
+            let authors: IUsers[] = await res.json();
+            console.log(authors)
             let allAuthors: any = [];
             // We just need their id as 'value' for tying into the blog, and their name as 'label' to display in the selector 
-            authors.map(a => allAuthors.push({ value: `${a.id}`, label: `${a.name}` }));
+            authors.map(a => allAuthors.push({ value: `${a.id}`, label: `${a.firstname} ${a.lastname}` }));
             updateAuthors(allAuthors);
             updateSelectedAuthor(allAuthors[0]); // Render the first author in the Authors table as the default value
         })()
