@@ -14,11 +14,21 @@ const hasAccess: express.RequestHandler = (req: any, res, next) => {
     }
 }
 
+// Checks to see if the user has the 'admin' permission at a bare minimum; 
+// If not, they just have 'guest' permissions and may only view a preview of the all blogs
+const hasAdmin: express.RequestHandler = (req: any, res, next) => {
+    if (!req.user || !req.user.roles.includes('admin')) {
+        res.status(401).send('Unauthorized. You must be an administrator to access this resource.');
+    } else {
+        return next();
+    }
+}
+
 
 // Allow guests (anyone currently not logged in) to see all blogs as a preview (to truncate each)
 router.get('/', async (req, res) => {
     try {
-        const blogs = await db.Blogs.get.all();
+        const blogs = await db.Blogs.get.with_authors();
         console.log(blogs);
         res.status(200).send(blogs);
     } catch (e) {
@@ -30,8 +40,8 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', hasAccess, async (req, res) => {
     try {
-        const id_dto = Number(req.params?.id);
-        const blogs = id_dto ? await db.Blogs.get.blog_by_id(id_dto) : await db.Blogs.get.all();
+        const id_dto = req.params?.id;
+        const blogs = id_dto ? await db.Blogs.get.with_my_author(id_dto) : await db.Blogs.get.all();
         res.status(200).send(blogs);
     } catch (e) {
         console.log(e);
@@ -39,19 +49,19 @@ router.get('/:id', hasAccess, async (req, res) => {
     }
 });
 
-// Allows authenticated users to see all blogs by a user at /api/blogs/user/:userid
-router.get('/user/:userid', hasAccess, async (req, res) => {
-    try { 
-        const userid_dto = req.params?.userid;
-        const userblogs = await db.Blogs.get.blogs_by_user(userid_dto);
-        res.status(200).send(userblogs);
-    } catch (e) {
-        console.log(e); 
-        res.status(500).send(e);
-    }
-});
+// // Allows authenticated admins to see all blogs by a user at /api/blogs/user/:userid
+// router.get('/user/:userid', hasAdmin, async (req, res) => {
+//     try { 
+//         const userid_dto = req.params?.userid;
+//         const userblogs = await db.Blogs.get.blogs_by_user(userid_dto);
+//         res.status(200).send(userblogs);
+//     } catch (e) {
+//         console.log(e); 
+//         res.status(500).send(e);
+//     }
+// });
 
-router.get('/:id?/edit', async (req, res, next) => {
+router.get('/:id?/edit', hasAdmin, async (req, res, next) => {
     try {
         const dto = req;
         const id = dto.params.id;

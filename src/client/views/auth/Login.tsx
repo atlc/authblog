@@ -1,25 +1,37 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { json, SetAccessToken } from '../../utils/api-service'
+import { api, SetAccessToken } from '../../utils/api-service'
 
 const Login = () => {
     const [email, updateEmail] = useState('');
     const [password, updatePassword] = useState('');
+    const [isRegistering, setRegistering] = useState(false);
     const history = useHistory();
 
-    const login = async () => {
+
+    const login = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (isRegistering) return;
+
         const credentials: {} = {
             email,
             password
         };
-        
-        const login = await json('/auth/login', 'POST', credentials);
-        const { token, userid, roles } = login;
-        if (token) {
-            SetAccessToken(token, { userid, roles });
-            history.replace('/');
-        } else {
-            alert('There was an error authenticating.')
+
+        try {
+            setRegistering(true);
+            const login = await api('/auth/login', 'POST', credentials);
+            const { token, userid, roles } = await login.json();
+            if (token) {
+                SetAccessToken(token, { userid, roles });
+                history.replace('/');
+            } else {
+                alert('There was an error authenticating.')
+            }
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setRegistering(false);
         }
     }
 
@@ -35,7 +47,7 @@ const Login = () => {
                 </div>
                 <div className="card-footer bg-primary">
                     <div className="row">
-                        <button className="btn btn-secondary m-2 shadow text-white" onClick={login}>Login!</button>
+                        <button className="btn btn-secondary m-2 shadow text-white" onClick={(e) => login(e)}>Login!</button>
                     </div>
                 </div>
             </div>

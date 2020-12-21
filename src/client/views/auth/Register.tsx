@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { json } from '../../utils/api-service'
+import { useHistory } from 'react-router-dom';
+import { api } from '../../utils/api-service'
 
 const Login = () => {
     const [firstname, updateFirstName] = useState('');
@@ -7,22 +8,38 @@ const Login = () => {
     const [avatar, updateAvatar] = useState('https://i.imgur.com/MSg2a9d.jpg');
     const [email, updateEmail] = useState('');
     const [password, updatePassword] = useState('');
+    const [isRegistering, setRegistering] = useState(false);
+    const history = useHistory();
 
-    const register = async () => {
-        const body: {} = JSON.stringify({
+
+
+    const register = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault(); 
+
+        if (isRegistering) return;
+
+        const body: {} = {
             firstname,
             lastname,
             avatar,
             email,
             password
-        });
-
-        const register = await json('/auth/register', 'POST', body);
-        const stat = await register.status;
-
-        alert(stat);
-
-        if (stat === 201) alert('Please go to the login page.')
+        };
+    
+        try {
+            setRegistering(true);
+            const register = await api('/auth/register', 'POST', body);
+            if (register.ok) {
+                alert('Registration successful!')
+                history.replace('/login');
+            } else {
+                alert('There was an error with registration, please ensure all mandatory fields are filled out.')
+            }
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setRegistering(false);
+        }
     }
 
     return (
@@ -52,7 +69,7 @@ const Login = () => {
                     </div>
                     <div className="card-footer">
                         <div className="row">
-                            <button className="btn btn-secondary m-2 shadow text-white" onClick={register}>Register!</button>
+                            <button className="btn btn-secondary m-2 shadow text-white" onClick={(e) => register(e)}>Register!</button>
                         </div>
                     </div>
                 </div>

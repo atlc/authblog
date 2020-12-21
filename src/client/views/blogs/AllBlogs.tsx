@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IBlogs } from '../../utils/types';
-import { json } from '../../utils/api-service';
+import { api } from '../../utils/api-service';
 import BlogCard from '../../components/blogcards/BlogCard';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,10 +10,11 @@ const AllBlogs = () => {
     useEffect(() => {
         (async () => {
             try {
-                const blogs = await json('/api/blogs');
-                updateBlogs(blogs);
-            } catch (error) {
-                console.log(error);
+                const blogs = await api('/api/blogs');
+                const blogRes = await blogs.json();
+                updateBlogs(blogRes[0]);
+            } catch (e) {
+                console.log(e);
             }
         })();
     }, []);

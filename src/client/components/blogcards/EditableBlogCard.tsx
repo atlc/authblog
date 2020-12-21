@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IBlogs } from '../../utils/types';
-import { json } from '../../utils/api-service';
+import { api } from '../../utils/api-service';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/scss/main.scss';
 import TagSelector from '../selectors/TagSelector';
@@ -21,7 +21,7 @@ const EditableBlogCard = (props: IBlogs) => {
             content: blogText
         });
 
-        const updatedBlog = await json('/api/blogs', 'PUT', body);
+        const updatedBlog = await api('/api/blogs', 'PUT', body);
         notify(updatedBlog.status, "Blog was", "updated");
 
         // Running what should be a PUT as a POST - Instead of having to run multiple PUT queries when multiple tags are selected,
@@ -29,14 +29,14 @@ const EditableBlogCard = (props: IBlogs) => {
         // values are bulk-inserted in a single query.
         const tags_array: {} = JSON.stringify({ blogtags_array: createBulkFriendlyBlogTagsSQL(id) });
         
-        const blogtags = await json(`/api/blogtags/update/${id}`, 'POST', tags_array);
+        const blogtags = await api(`/api/blogtags/update/${id}`, 'POST', tags_array);
         console.log(blogtags);
     }
 
     const deleteBlog = () => {
         // Synchronous-async code to deal with synchronous database deletions. Ugh 
-        json(`/api/blogtags/${id}`, 'DELETE')
-            .then(() => json(`/api/blogs/${id}`, 'DELETE'))
+        api(`/api/blogtags/${id}`, 'DELETE')
+            .then(() => api(`/api/blogs/${id}`, 'DELETE'))
             .then(delRes =>  notify(delRes.status, "Blog was", "deleted"))
         
     }

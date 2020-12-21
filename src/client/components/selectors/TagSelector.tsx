@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
-import { IBlogTags } from '../../utils/types';
-import { ITags } from '../../utils/types';
-
+import { IBlogTags, ITags } from '../../utils/types';
+import { api } from '../../utils/api-service';
 
 const TagSelector = (props: TagSelectorProps) => {
     const { id, disabled, onSelectChange } = props; // onSelectChange() allows us to propagate the state of current selected authors up to parent functions/components
@@ -13,7 +12,7 @@ const TagSelector = (props: TagSelectorProps) => {
 
     useEffect(() => {
         (async () => {
-            const res = await fetch('/api/tags');
+            const res = await api('/api/tags');
             let tags: ITags[] = await res.json();
             let allOptions: any = [];
             tags.map(t => allOptions.push({ value: `${t.id}`, label: `${t.name}` }));
@@ -31,7 +30,7 @@ const TagSelector = (props: TagSelectorProps) => {
                 } else if (id === undefined) { // Else if while creating a new blog allTags does NOT exist yet, short circuit the return until it does 
                     return;
                 }                               // Else continue on
-                const res = await fetch(`/api/blogtags/${id}`);
+                const res = await api(`/api/blogtags/${id}`);
                 let tags = await res.json();
                 let parsedTags: ITags[] = tags[0]; // Coming from a stored procedure so parsing out just what I want
                 let myOptions: any = [];

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { IBlogs } from '../../utils/types';
-import { json, User } from '../../utils/api-service';
+import { api, User } from '../../utils/api-service';
 import EditableBlogCard from '../../components/blogcards/EditableBlogCard';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,10 +18,11 @@ const EditableBlog = (props: EditableBlogProps) => {
         (async () => {
             try {
                 // This endpoint fetches blog + author info in stored procedure
-                const blog = await json(`/api/blogs/${id}/edit`);
-                updateBlog(blog[0][0]);
-            } catch (error) {
-                console.log(error);
+                const blog = await api(`/api/blogs/${id}/edit`);
+                const blogRes = await blog.json();
+                updateBlog(blogRes[0][0]);
+            } catch (e) {
+                console.log(e);
             }
         })();
     }, []);

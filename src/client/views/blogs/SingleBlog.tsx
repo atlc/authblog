@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { json, User } from '../../utils/api-service';
+import { api, User } from '../../utils/api-service';
 import SingleBlogCard from '../../components/blogcards/SingleBlogCard';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,10 +15,11 @@ const SingleBlog = () => {
         }
         (async () => {
             try {
-                const blog = await json(`/api/blogs/${id}`);
-                updateBlog(blog)
-            } catch (error) {
-                console.log(error);
+                const blog = await api(`/api/blogs/${id}`);
+                const blogRes = await blog.json();
+                updateBlog(blogRes[0])
+            } catch (e) {
+                console.log(e);
             }
         })();
     }, []);

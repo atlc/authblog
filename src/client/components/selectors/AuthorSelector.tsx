@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { IAuthors } from '../../utils/types';
+import { api } from '../../utils/api-service';
+
 
 const AuthorSelector = (props: AuthorSelectorProps) => {
     const { onSelectChange } = props; // Allows us to propagate the state of current selected authors up to parent functions/components
@@ -9,7 +11,7 @@ const AuthorSelector = (props: AuthorSelectorProps) => {
 
     useEffect(() => {
         (async () => {
-            const res = await fetch('/api/users');
+            const res = await api('/api/users');
             let authors: IAuthors[] = await res.json();
             let allAuthors: any = [];
             // We just need their id as 'value' for tying into the blog, and their name as 'label' to display in the selector 

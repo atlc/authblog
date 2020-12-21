@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { json, User } from '../../utils/api-service';
+import { api, User } from '../../utils/api-service';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/scss/main.scss';
 import AuthorSelector from '../../components/selectors/AuthorSelector';
@@ -32,7 +32,7 @@ const CreateBlog = () => {
             content: blogText
         });
 
-        const newBlog = await json('/api/blogs', 'POST', body)
+        const newBlog = await api('/api/blogs', 'POST', body)
         const blogID = await newBlog.insertId;
         const blogPostStatus = newBlog.status;
         console.log(newBlog, newBlog.status);
@@ -40,7 +40,7 @@ const CreateBlog = () => {
         // Inserts the info into the blogtags table
         const blogTags: {} = JSON.stringify({ blogtags_array: createBulkFriendlyBlogTagsSQL(blogID) });
 
-        const newTags = await json('/api/blogtags', 'POST', blogTags)
+        const newTags = await api('/api/blogtags', 'POST', blogTags)
         const blogTagsPostStatus = newTags.status;
 
         console.log(newTags, newTags.status)
