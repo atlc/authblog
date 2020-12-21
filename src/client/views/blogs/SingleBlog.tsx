@@ -1,33 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import { json, User } from '../../utils/api-service';
 import SingleBlogCard from '../../components/blogcards/SingleBlogCard';
 import { v4 as uuidv4 } from 'uuid';
-import { createImportSpecifier } from 'typescript';
 
 const SingleBlog = () => {
     const { id } = useParams<SingleBlogProps>();
+    const history = useHistory();
     const [blog, updateBlog] = useState();
-    const [unauthorized, updateUnauthorized] = useState(null);
 
     useEffect(() => {
+        if (!User || User.userid === null || !User.roles.includes('user')) {
+            history.replace('/login');
+        }
         (async () => {
             try {
-                // This endpoint fetches blog + author info in stored procedure
-                const res = await fetch(`/api/blogs/${id}`);
-                if (res.status === 401) {
-                    updateUnauthorized(true)
-                } else {
-                    let blogs = await res.json();
-                    console.log(blogs)
-                }
-                // updateBlog(blogs[0][0]);
+                const blog = await json(`/api/blogs/${id}`);
+                updateBlog(blog)
             } catch (error) {
                 console.log(error);
             }
         })();
     }, []);
-
-    if (unauthorized) return <h1>You must be logged in to access this resource.</h1>
 
     return (
         <div className="row">

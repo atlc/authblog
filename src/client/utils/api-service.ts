@@ -1,38 +1,42 @@
-export const TOKEN_KEY = 'token'
+export let Token: string = localStorage.getItem('token') || null;
 
-export default async <T = any>(uri: string, method: string = 'GET', body?: {}) => {
-    const Token = localStorage.getItem(TOKEN_KEY);
+export let User: any = {
+    userid: localStorage.getItem('userid') || null,
+    roles: localStorage.getItem('roles') || null
+}
+
+export const json = async <T = any>(uri: string, method: string = 'GET', body?: {}) => {
     const headers = new Headers();
     const options: {[key: string]: string | Headers} = {
         method,
         headers
     }
 
-
     if (method === 'POST' || method === 'PUT') {
         headers.append('Content-Type', 'application/json');
         options.body = JSON.stringify(body)
+        console.log(options.body)
     }
 
     if (Token) headers.append('Authorization', `Bearer ${Token}`);
 
     try {
-        const res = await fetch(uri, options);
-
-        // switch(true) {
-        //     case (Number(res.status) >= 500):
-        //         throw new Error('My code sucks, server error!');
-        //     case (Number(res.status) >= 401 && Number(res.status) < 500):
-        //         throw new Error('Token invalid or not found!');
-        //     case (Number(res.status) >= 200 && Number(res.status) < 400):
-        //         return await res.json();    
-        // }
-
-        if (!res.ok) throw new Error('Server error.');
-        
-        const data = await res.json();
-        console.log(data);
+        const res = await fetch(uri, options)    
+        if (res.ok) {
+            return <T>(await res.json())
+        } else {
+            return res.status;
+        }
     } catch (e) {
-        console.log(e)
+        console.log(e);
     }
+}
+
+export const SetAccessToken = (token: string, user: {} = { userid: undefined, roles: [] }) => {
+    Token = token;
+    User = user;
+
+    localStorage.setItem('token', token);
+    localStorage.setItem('userid', User.userid);
+    localStorage.setItem('roles', User.roles);
 }

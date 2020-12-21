@@ -1,27 +1,23 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { json, SetAccessToken } from '../../utils/api-service'
 
 const Login = () => {
     const [email, updateEmail] = useState('');
     const [password, updatePassword] = useState('');
+    const history = useHistory();
 
-    const handleEmailUpdate = (event: React.ChangeEvent<HTMLInputElement>) => updateEmail(event.target.value);
-    const handlePasswordUpdate = (event: React.ChangeEvent<HTMLInputElement>) => updatePassword(event.target.value);
-    
     const login = async () => {
-        const loginOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email,
-                password
-            })
+        const credentials: {} = {
+            email,
+            password
         };
-        const res = await fetch('/auth/login', loginOptions);
-        const loginRes = await res.json();
-        const token = await loginRes.token;
+        
+        const login = await json('/auth/login', 'POST', credentials);
+        const { token, userid, roles } = login;
         if (token) {
-            localStorage.setItem('token', token);
-            alert('Success!');
+            SetAccessToken(token, { userid, roles });
+            history.replace('/');
         } else {
             alert('There was an error authenticating.')
         }
@@ -32,10 +28,10 @@ const Login = () => {
             <h1 className="text-center mt-5">Login!</h1>
             <div className="card text-black bg-light m-3 shadow-lg">
                 <div className="card-header text-dark bg-warning">
-                    <input type="email" placeholder="Enter your email:" onChange={handleEmailUpdate}/>
+                    <input type="email" placeholder="Enter your email:" onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateEmail(e.target.value)} />
                 </div>
                 <div className="card-header text-dark bg-secondary">
-                    <input type="password" placeholder="Enter your password:" onChange={handlePasswordUpdate}/>
+                    <input type="password" placeholder="Enter your password:" onChange={(e: React.ChangeEvent<HTMLInputElement>) => updatePassword(e.target.value)} />
                 </div>
                 <div className="card-footer bg-primary">
                     <div className="row">

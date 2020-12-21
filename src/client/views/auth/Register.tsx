@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { json } from '../../utils/api-service'
 
 const Login = () => {
     const [firstname, updateFirstName] = useState('');
@@ -7,32 +8,21 @@ const Login = () => {
     const [email, updateEmail] = useState('');
     const [password, updatePassword] = useState('');
 
-    const handleFirstNameUpdate = (event: React.ChangeEvent<HTMLInputElement>) => updateFirstName(event.target.value);
-    const handleLastNameUpdate = (event: React.ChangeEvent<HTMLInputElement>) => updateLastName(event.target.value);
-    const handleAvatarUpdate = (event: React.ChangeEvent<HTMLInputElement>) => updateAvatar(event.target.value);
-    const handleEmailUpdate = (event: React.ChangeEvent<HTMLInputElement>) => updateEmail(event.target.value);
-    const handlePasswordUpdate = (event: React.ChangeEvent<HTMLInputElement>) => updatePassword(event.target.value);
-
-
     const register = async () => {
-        const loginOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                firstname,
-                lastname,
-                avatar,
-                email,
-                password
-            })
-        };
-        const res = await fetch('/auth/register', loginOptions);
-        const loginRes = await res.json();
-        const status = await res.status;
+        const body: {} = JSON.stringify({
+            firstname,
+            lastname,
+            avatar,
+            email,
+            password
+        });
 
-        alert(loginRes);
+        const register = await json('/auth/register', 'POST', body);
+        const stat = await register.status;
 
-        if (status === 201) alert('Please go to the login page.')
+        alert(stat);
+
+        if (stat === 201) alert('Please go to the login page.')
     }
 
     return (
@@ -42,23 +32,23 @@ const Login = () => {
                 <div className="card-body">
                     <div className="form-inline m-2 bg-secondary">
                         <label className="mx-2">First Name:</label>
-                        <input type="text" className="form-control ml-2" onChange={handleFirstNameUpdate} placeholder="Enter your first name here:" />
+                        <input type="text" className="form-control ml-2" onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateFirstName(e.target.value)} placeholder="Enter your first name here:" />
                     </div>
                     <div className="form-inline m-2">
                         <label className="mx-2">Last Name:</label>
-                        <input type="text" className="form-control ml-2" onChange={handleLastNameUpdate} placeholder="Enter your last name here:" />
+                        <input type="text" className="form-control ml-2" onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateLastName(e.target.value)} placeholder="Enter your last name here:" />
                     </div>
                     <div className="form-inline m-2 bg-warning">
                         <label className="mx-2">Avatar URL:</label>
-                        <input type="text" className="form-control ml-2" onChange={handleAvatarUpdate} placeholder="Optional link to image:" />
+                        <input type="text" className="form-control ml-2" onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateAvatar(e.target.value)} placeholder="Optional link to image:" />
                     </div>
                     <div className="form-inline m-2">
                         <label className="mx-2">Email address</label>
-                        <input type="email" className="form-control ml-2" onChange={handleEmailUpdate} placeholder="Enter your email here:" />
+                        <input type="email" className="form-control ml-2" onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateEmail(e.target.value)} placeholder="Enter your email here:" />
                     </div>
                     <div className="form-inline m-2 bg-primary">
                         <label className="mx-2">Password</label>
-                        <input type="password" className="form-control ml-2" onChange={handlePasswordUpdate} placeholder="Enter your password here:" />
+                        <input type="password" className="form-control ml-2" onChange={(e: React.ChangeEvent<HTMLInputElement>) => updatePassword(e.target.value)} placeholder="Enter your password here:" />
                     </div>
                     <div className="card-footer">
                         <div className="row">

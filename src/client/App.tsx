@@ -7,6 +7,7 @@ import SingleBlog from './views/blogs/SingleBlog';
 import EditableBlog from './views/blogs/EditableBlog';
 import CreateBlog from './views/blogs/CreateBlog';
 import Login from './views/auth/Login';
+import Logout from './views/auth/Logout';
 import Register from './views/auth/Register';
 
 const App = (props: AppProps) => {
@@ -32,6 +33,9 @@ const App = (props: AppProps) => {
 					</Route>
 					<Route path="/login">
 						<Login />
+					</Route>
+					<Route path="/logout">
+						<Logout />
 					</Route>
 					<Route path="/register">
 						<Register />

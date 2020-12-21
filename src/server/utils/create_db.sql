@@ -106,14 +106,14 @@ delimiter $$
 		BEGIN
 			IF blogid IS NULL THEN -- Allowing for """optional""" parameter passing to return all or just one
 				SELECT 
-					b.id, b.title, b.content, b.authorid, a.name as AuthorName, a.email as AuthorEmail, b.created_at, b.updated_at
+					b.id, b.title, b.content, b.userid, CONCAT(u.firstname, ' ', u.lastname) as AuthorName, u.email as AuthorEmail, b.created_at, b.updated_at
 				FROM Blogs b
-				JOIN Authors a on b.authorid = a.id;
+				JOIN Users u on b.userid = u.id;
 			ELSE
 				SELECT 
-					b.id, b.title, b.content, b.authorid, a.name as AuthorName, a.email as AuthorEmail, b.created_at, b.updated_at
+					b.id, b.title, b.content, b.userid, CONCAT(u.firstname, ' ', u.lastname) as AuthorName, u.email as AuthorEmail, b.created_at, b.updated_at
 				FROM Blogs b
-				JOIN Authors a on b.authorid = a.id
+				JOIN Users u on b.userid = u.id
                 WHERE b.id = blogid;
 			END IF;
 END $$

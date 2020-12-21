@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { User } from '../../utils/api-service';
+import NB from './NavButton';
+
+const isLoggedIn = (User && User.userid && User.roles.includes('user'));
 
 const Navbar = () => {
     return (
         <nav className="navbar mr-auto fixed-top navbar-light bg-primary">
             <div className="row">
-                <Link className="btn bg-secondary text-white mx-2" to="/">Home</Link>
-                <Link className="btn bg-secondary text-white mx-2" to="/blogs">All Blogs</Link>
-                <Link className="btn bg-secondary text-white mx-2" to="/blogs/create">Create a Blog</Link>
-                <Link className="btn bg-secondary text-white mx-2" to="/login">Login</Link>
-                <Link className="btn bg-secondary text-white mx-2" to="/register">Register</Link>
+                <NB path="/" text="Home" />
+                <NB path="/blogs" text={isLoggedIn? "All Blogs" : "Preview Blogs"} />
+                {isLoggedIn ? <NB path="/blogs/create" text="Create a Blog" /> : <></>}
+                {!isLoggedIn ? 
+                    <>
+                        <NB path="/login" text="Login" />
+                        <NB path="/register" text="Register" />
+                    </>
+                    : <NB path="/logout" text="Log Out" />}
             </div>
         </nav>
     );

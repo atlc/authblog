@@ -49,7 +49,19 @@ router.get('/user/:userid', hasAccess, async (req, res) => {
         console.log(e); 
         res.status(500).send(e);
     }
-})
+});
+
+router.get('/:id?/edit', async (req, res, next) => {
+    try {
+        const dto = req;
+        const id = dto.params.id;
+        const blog_with_author = await db.Blogs.get.with_my_author(id);
+        res.status(200).json(blog_with_author);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send(`A server error has occurred. Please check the server logs for more info. ${e}`);
+    }
+});
 
 
 

@@ -9,7 +9,7 @@ const AuthorSelector = (props: AuthorSelectorProps) => {
 
     useEffect(() => {
         (async () => {
-            const res = await fetch('/api/authors');
+            const res = await fetch('/api/users');
             let authors: IAuthors[] = await res.json();
             let allAuthors: any = [];
             // We just need their id as 'value' for tying into the blog, and their name as 'label' to display in the selector 

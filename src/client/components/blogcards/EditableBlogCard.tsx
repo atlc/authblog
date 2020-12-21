@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { IBlogs } from '../../utils/types';
+import { json } from '../../utils/api-service';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/scss/main.scss';
 import TagSelector from '../selectors/TagSelector';
@@ -15,51 +16,29 @@ const EditableBlogCard = (props: IBlogs) => {
     const createBulkFriendlyBlogTagsSQL = (blogID: string) => blogTags.map((t: any) => t.value).map((tagid: string) => [`${blogID}`, tagid]);
 
     const updateBlog = async () => {
-        const blogsOptions = {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id: id,
-                content: blogText
-            })
-        };
+        const body: {} =  JSON.stringify({
+            id: id,
+            content: blogText
+        });
 
-        fetch('/api/blogs', blogsOptions)
-            .then(res => res.status)
-            .then(put_results => {
-                notify(put_results, "Blog was", "updated");
-            })
-
+        const updatedBlog = await json('/api/blogs', 'PUT', body);
+        notify(updatedBlog.status, "Blog was", "updated");
 
         // Running what should be a PUT as a POST - Instead of having to run multiple PUT queries when multiple tags are selected,
         // when a POST is received at this endpoint it will delete all the BlogTags at that blogid, then run a POST where all the
         // values are bulk-inserted in a single query.
-        const blogTagsOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                blogtags_array: createBulkFriendlyBlogTagsSQL(id)
-            })
-        };
-        const bt = await fetch(`/api/blogtags/update/${id}`, blogTagsOptions);
-        const btjson = await bt.json();
-        // console.log(btjson);
+        const tags_array: {} = JSON.stringify({ blogtags_array: createBulkFriendlyBlogTagsSQL(id) });
+        
+        const blogtags = await json(`/api/blogtags/update/${id}`, 'POST', tags_array);
+        console.log(blogtags);
     }
 
     const deleteBlog = () => {
-        const reqOptions = {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-        };
-
         // Synchronous-async code to deal with synchronous database deletions. Ugh 
-        fetch(`/api/blogtags/${id}`, reqOptions)
-            .then(() => {
-                fetch(`/api/blogs/${id}`, reqOptions)
-                    .then(blogRes => {
-                        notify(blogRes.status, "Blog was", "deleted");
-                    })
-            })
+        json(`/api/blogtags/${id}`, 'DELETE')
+            .then(() => json(`/api/blogs/${id}`, 'DELETE'))
+            .then(delRes =>  notify(delRes.status, "Blog was", "deleted"))
+        
     }
 
     const notify = (stat: number, item: string, requestVerb: string) => {
