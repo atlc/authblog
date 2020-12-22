@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api, User } from '../../utils/api-service';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/scss/main.scss';
 import AuthorSelector from '../../components/selectors/AuthorSelector';
 import TagSelector from '../../components/selectors/TagSelector';
 import { useHistory } from 'react-router-dom';
@@ -34,18 +33,16 @@ const CreateBlog = () => {
         };
 
         const newBlog = await api('/api/blogs', 'POST', body);
-        const blogID = await newBlog.insertId;
+        const res = await newBlog.json();
+        const blogID = await res.blog.insertId;
         const blogPostStatus = newBlog.status;
-        console.log(newBlog, newBlog.status);
 
         // Inserts the info into the blogtags table
-        const blogTags: {} = { blogtags_array: createBulkFriendlyBlogTagsSQL(blogID) };
-
-        const newTags = await api('/api/blogtags', 'POST', blogTags)
+        const tags: {} = { blogtags_array: createBulkFriendlyBlogTagsSQL(blogID) };
+        const newTags = await api('/api/blogtags', 'POST', tags)
         const blogTagsPostStatus = newTags.status;
 
-        console.log(newTags, newTags.status)
-        // If both the POST requests return a status of 200, return a successful toast
+        // If both the POST requests return a status of 201, return a successful toast
         // Otherwise pop up an error toast
         notify(blogPostStatus, blogTagsPostStatus);
     }
@@ -60,7 +57,7 @@ const CreateBlog = () => {
             draggable: true,
         };
 
-        if (resStatus === 200 && resStatus2 === 200) {
+        if (resStatus === 201 && resStatus2 === 201) {
             toast.success('😎 Blog post was created!', { ...toastOptions, progress: undefined });
         } else {
             toast.error('😞 Could not create blog, please check server logs for further details.', { ...toastOptions, progress: undefined });

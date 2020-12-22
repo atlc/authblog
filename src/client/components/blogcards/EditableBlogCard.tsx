@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { IBlogs } from '../../utils/types';
 import { api } from '../../utils/api-service';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/scss/main.scss';
 import TagSelector from '../selectors/TagSelector';
 
 const EditableBlogCard = (props: IBlogs) => {

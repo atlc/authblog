@@ -10,6 +10,7 @@ const EditableBlog = (props: EditableBlogProps) => {
     const history = useHistory();
 
     const [blog, updateBlog] = useState<IBlogs>();
+    const [authMessage, setAuthMessage] = useState('Loading EditableBlog...');
 
     useEffect(() => {
         if (!User || User.userid === null || !User.roles.includes('admin')) {
@@ -20,7 +21,7 @@ const EditableBlog = (props: EditableBlogProps) => {
                 // This endpoint fetches blog + author info in stored procedure
                 const blog = await api(`/api/blogs/${id}/edit`);
                 const blogRes = await blog.json();
-                updateBlog(blogRes[0][0]);
+                blog.ok ? updateBlog(blogRes[0][0]) : setAuthMessage(blogRes);
             } catch (e) {
                 console.log(e);
             }
@@ -29,7 +30,7 @@ const EditableBlog = (props: EditableBlogProps) => {
 
     return (
         <div className="row">
-            {blog ? <EditableBlogCard key={uuidv4()} {...blog} /> : <h2>Loading EditableBlog...</h2>}
+            {blog ? <EditableBlogCard key={uuidv4()} {...blog} /> : <h2>{authMessage}</h2>}
         </div>
     );
 };

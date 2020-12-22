@@ -16,7 +16,7 @@ router.post('/', async (req, res, next) => {
     try {
         const blogtags_array = req.body.blogtags_array;
         const blogtags = await db.BlogTags.do.create_new(blogtags_array);
-        res.status(200).send(blogtags);
+        res.status(201).send(blogtags);
     } catch (e) {
         res.status(500).send(`A server error has occurred. Please check the server logs for more info. ${e}`);
     }

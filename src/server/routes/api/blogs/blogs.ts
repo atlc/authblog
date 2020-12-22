@@ -14,8 +14,7 @@ const hasAccess: express.RequestHandler = (req: any, res, next) => {
     }
 }
 
-// Checks to see if the user has the 'admin' permission at a bare minimum; 
-// If not, they just have 'guest' permissions and may only view a preview of the all blogs
+// Checks to see if the user has the 'admin' permission at a bare minimum
 const hasAdmin: express.RequestHandler = (req: any, res, next) => {
     if (!req.user || !req.user.roles.includes('admin')) {
         res.status(401).send('Unauthorized. You must be an administrator to access this resource.');

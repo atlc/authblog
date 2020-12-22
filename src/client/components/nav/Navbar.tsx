@@ -5,6 +5,10 @@ import NB from './NavButton';
 const isLoggedIn = (User && User.userid && User.roles.includes('user'));
 
 const Navbar = () => {
+    useEffect(() => {
+        // do nothing to just trigger rerender of navbar upon auth change
+    }, [isLoggedIn]);
+
     return (
         <nav className="navbar mr-auto fixed-top navbar-light bg-primary">
             <div className="row">
