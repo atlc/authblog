@@ -7,7 +7,7 @@ import TagSelector from '../selectors/TagSelector';
 
 const SingleBlogCard = (props: IBlogs) => {
     const { title, content, updated_at, id, AuthorName, AuthorEmail } = props[0];
-    // console.log(props);
+    console.log(props);
     const [blogtags, updateMyTags] = useState([]);
 
     // TagSelector component requires a change handler prop, but since these are read-only

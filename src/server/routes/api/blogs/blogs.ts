@@ -27,9 +27,15 @@ const hasAdmin: express.RequestHandler = (req: any, res, next) => {
 // Allow guests (anyone currently not logged in) to see all blogs as a preview (to truncate each)
 router.get('/', async (req, res) => {
     try {
-        const blogs = await db.Blogs.get.all();
-        console.log(blogs);
-        res.status(200).send(blogs);
+        let blogs = await db.Blogs.get.with_authors();
+        blogs = blogs[0]; // Parsing out stored procedure response
+        // Sending blog objects to the frontend with the previews already spliced
+        const previews = Object.keys(blogs).map(blog => {
+            const { id, title, content,  AuthorName, AuthorEmail, userid, created_at, updated_at} = blogs[blog];
+            return { id, title, content: content.slice(0, 150), AuthorName, AuthorEmail, userid, created_at, updated_at };
+        });
+        console.log(previews)
+        res.status(200).send(previews);
     } catch (e) {
         console.log(e);
         res.status(500).send(e);
@@ -39,9 +45,9 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', hasAccess, async (req, res) => {
     try {
-        const id_dto = req.params?.id;
-        const blogs = id_dto ? await db.Blogs.get.with_my_author(id_dto) : await db.Blogs.get.with_authors();
-        res.status(200).send(blogs);
+        const id_dto = req.params.id;
+        const blog = await db.Blogs.get.with_my_author(id_dto);
+        res.status(200).send(blog);
     } catch (e) {
         console.log(e);
         res.status(500).send(e);
@@ -51,7 +57,7 @@ router.get('/:id', hasAccess, async (req, res) => {
 // Allows authenticated admins to see all blogs by a user at /api/blogs/user/:userid
 router.get('/user/:userid', hasAdmin, async (req, res) => {
     try { 
-        const userid_dto = req.params?.userid;
+        const userid_dto = req.params.userid;
         const userblogs = await db.Blogs.get.blogs_by_user(userid_dto);
         res.status(200).send(userblogs);
     } catch (e) {

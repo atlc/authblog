@@ -12,6 +12,7 @@ const AllBlogs = () => {
             try {
                 const blogs = await api('/api/blogs');
                 const blogRes = await blogs.json();
+                // console.log(blogRes);
                 updateBlogs(blogRes);
             } catch (e) {
                 console.log(e);

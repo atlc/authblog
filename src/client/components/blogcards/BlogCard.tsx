@@ -10,7 +10,7 @@ const BlogCard = (props: IBlogs) => {
         <div className="card text-white bg-light m-3 shadow-lg" style={{ maxWidth: "18rem" }}>
             <div className="card-header text-dark bg-warning">{title}</div>
             <div className="card-body">
-                <p className="text-dark">{content.length > 150 ? <>{content.slice(0, 150)}<strong> ...(See more)</strong></> : <>{content}</>}</p>
+                <p className="text-dark">{content}{content.length === 150 ? <strong> ...(See more)</strong> : <></>}</p>
             </div>
             <div className="card-footer bg-primary">
                 <p>By {AuthorName}.</p>
