@@ -12,7 +12,7 @@ const AllBlogs = () => {
             try {
                 const blogs = await api('/api/blogs');
                 const blogRes = await blogs.json();
-                updateBlogs(blogRes[0]);
+                updateBlogs(blogRes);
             } catch (e) {
                 console.log(e);
             }
