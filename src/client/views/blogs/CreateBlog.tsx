@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api, User } from '../../utils/api-service';
 import { ToastContainer, toast } from 'react-toastify';
-import AuthorSelector from '../../components/selectors/AuthorSelector';
 import TagSelector from '../../components/selectors/TagSelector';
 import { useHistory } from 'react-router-dom';
 
@@ -50,7 +49,7 @@ const CreateBlog = () => {
     const notify = (resStatus: number, resStatus2: number) => {
         const toastOptions = {
             position: toast.POSITION.TOP_RIGHT,
-            autoClose: 5000,
+            autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -59,8 +58,9 @@ const CreateBlog = () => {
 
         if (resStatus === 201 && resStatus2 === 201) {
             toast.success('😎 Blog post was created!', { ...toastOptions, progress: undefined });
+            setTimeout(() => {history.replace('/blogs')}, 3000);
         } else {
-            toast.error('😞 Could not create blog, please check server logs for further details.', { ...toastOptions, progress: undefined });
+            toast.error('😞 Could not create blog, please validate all fields or check server logs for further details.', { ...toastOptions, progress: undefined });
         }
     }
 
@@ -74,17 +74,6 @@ const CreateBlog = () => {
                     <textarea className="text-dark" value={blogText} rows={10} cols={80} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => updateBlogText(e.target.value)}></textarea>
                 </div>
                 <div className="card-footer bg-primary">
-                    {(User && User.userid !== null && User.roles.includes('superadmin')) ?
-                        <>
-                            <div className="row">
-                                <h5>Select your author:  </h5>
-                            </div>
-                            <div className="row">
-                                <AuthorSelector onSelectChange={(authorFromChild: any) => updateBlogAuthor(authorFromChild)} />
-                            </div>
-                        </>
-                        : <></>
-                    }
                     <div className="row">
                         <h5>Tags: </h5>
                     </div>
@@ -98,7 +87,7 @@ const CreateBlog = () => {
             </div>
             <ToastContainer
                 position="top-right"
-                autoClose={5000}
+                autoClose={3000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick

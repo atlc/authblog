@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Checks to see if the user has the 'user' permission at a bare minimum; 
 // If not, they just have 'guest' permissions and may only view a preview of the all blogs
-const hasAccess: express.RequestHandler = (req: any, res, next) => {
+const isUser: express.RequestHandler = (req: any, res, next) => {
     if (!req.user || !req.user.roles.includes('user')) {
         res.status(401).send('Unauthorized. You must be logged in to access this resource.');
     } else {
@@ -15,7 +15,7 @@ const hasAccess: express.RequestHandler = (req: any, res, next) => {
 }
 
 // Checks to see if the user has the 'admin' permission at a bare minimum
-const hasAdmin: express.RequestHandler = (req: any, res, next) => {
+const isAdmin: express.RequestHandler = (req: any, res, next) => {
     if (!req.user || !req.user.roles.includes('admin')) {
         res.status(401).send('Unauthorized. You must be an administrator to access this resource.');
     } else {
@@ -24,7 +24,7 @@ const hasAdmin: express.RequestHandler = (req: any, res, next) => {
 }
 
 
-// Allow guests (anyone currently not logged in) to see all blogs as a preview (to truncate each)
+// Allow guests (anyone currently not logged in) to see all blogs as a preview
 router.get('/', async (req, res) => {
     try {
         let blogs = await db.Blogs.get.with_authors();
@@ -34,7 +34,6 @@ router.get('/', async (req, res) => {
             const { id, title, content,  AuthorName, AuthorEmail, userid, created_at, updated_at} = blogs[blog];
             return { id, title, content: content.slice(0, 150), AuthorName, AuthorEmail, userid, created_at, updated_at };
         });
-        console.log(previews)
         res.status(200).send(previews);
     } catch (e) {
         console.log(e);
@@ -43,11 +42,11 @@ router.get('/', async (req, res) => {
 });
 
 
-router.get('/:id', hasAccess, async (req, res) => {
+router.get('/:id', isUser, async (req, res) => {
     try {
         const id_dto = req.params.id;
         const blog = await db.Blogs.get.with_my_author(id_dto);
-        res.status(200).send(blog);
+        res.status(200).send(blog[0][0]); // Parsing out just the blog from the stored procedure response
     } catch (e) {
         console.log(e);
         res.status(500).send(e);
@@ -55,7 +54,7 @@ router.get('/:id', hasAccess, async (req, res) => {
 });
 
 // Allows authenticated admins to see all blogs by a user at /api/blogs/user/:userid
-router.get('/user/:userid', hasAdmin, async (req, res) => {
+router.get('/user/:userid', isAdmin, async (req, res) => {
     try { 
         const userid_dto = req.params.userid;
         const userblogs = await db.Blogs.get.blogs_by_user(userid_dto);
@@ -66,7 +65,7 @@ router.get('/user/:userid', hasAdmin, async (req, res) => {
     }
 });
 
-router.get('/:id?/edit', hasAdmin, async (req, res, next) => {
+router.get('/:id?/edit', isAdmin, async (req, res, next) => {
     try {
         const dto = req;
         const id = dto.params.id;
@@ -78,7 +77,7 @@ router.get('/:id?/edit', hasAdmin, async (req, res, next) => {
     }
 });
 
-router.post('/', hasAccess, async (req, res, next) => {
+router.post('/', isUser, async (req, res, next) => {
     try {
         const blog = req.body;
         const { userid, title, content } = blog;
@@ -89,7 +88,7 @@ router.post('/', hasAccess, async (req, res, next) => {
     }
 });
 
-router.put('/', hasAdmin, async (req, res, next) => {
+router.put('/', isAdmin, async (req, res, next) => {
     try {
         const blog = req.body;
         const { userid, content } = blog;
@@ -101,7 +100,7 @@ router.put('/', hasAdmin, async (req, res, next) => {
     }
 });
 
-router.delete('/:id', hasAdmin, async (req, res, next) => {
+router.delete('/:id', isAdmin, async (req, res, next) => {
     try {
         const { id } = req.params;
         const deletedBlog = await db.Blogs.do.destroy(id);

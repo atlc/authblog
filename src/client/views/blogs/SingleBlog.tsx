@@ -17,7 +17,7 @@ const SingleBlog = () => {
             try {
                 const blog = await api(`/api/blogs/${id}`);
                 const blogRes = await blog.json();
-                updateBlog(blogRes[0])
+                updateBlog(blogRes);
             } catch (e) {
                 console.log(e);
             }

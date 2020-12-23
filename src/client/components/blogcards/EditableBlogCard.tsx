@@ -3,11 +3,13 @@ import { IBlogs } from '../../utils/types';
 import { api } from '../../utils/api-service';
 import { ToastContainer, toast } from 'react-toastify';
 import TagSelector from '../selectors/TagSelector';
+import { useHistory } from 'react-router-dom';
 
 const EditableBlogCard = (props: IBlogs) => {
     const { title, content, id } = props;
     const [blogText, updateBlogText] = useState(content);
     const [blogTags, updateBlogTags] = useState(null);
+    const history = useHistory();
 
     const handleBlogtextUpdate = (e: React.ChangeEvent<HTMLTextAreaElement>) => updateBlogText(e.target.value);
     const handleSelectedTagsUpdate = (tagsFromChild: any) => updateBlogTags(tagsFromChild); // Grabs the state from the child TagSelector component
@@ -15,28 +17,36 @@ const EditableBlogCard = (props: IBlogs) => {
     const createBulkFriendlyBlogTagsSQL = (blogID: string) => blogTags.map((t: any) => t.value).map((tagid: string) => [`${blogID}`, tagid]);
 
     const updateBlog = async () => {
-        const body: {} =  JSON.stringify({
+        const body: {} = JSON.stringify({
             id: id,
             content: blogText
         });
 
         const updatedBlog = await api('/api/blogs', 'PUT', body);
         notify(updatedBlog.status, "Blog was", "updated");
+        setTimeout(() => {history.replace('/blogs')}, 3000);
 
         // Running what should be a PUT as a POST - Instead of having to run multiple PUT queries when multiple tags are selected,
         // when a POST is received at this endpoint it will delete all the BlogTags at that blogid, then run a POST where all the
         // values are bulk-inserted in a single query.
         const tags_array: {} = JSON.stringify({ blogtags_array: createBulkFriendlyBlogTagsSQL(id) });
-        
+
         const blogtags = await api(`/api/blogtags/update/${id}`, 'POST', tags_array);
     }
 
     const deleteBlog = () => {
         // Synchronous-async code to deal with synchronous database deletions. Ugh 
         api(`/api/blogtags/${id}`, 'DELETE')
-            .then(() => api(`/api/blogs/${id}`, 'DELETE'))
-            .then(delRes =>  notify(delRes.status, "Blog was", "deleted"))
-        
+            .then(btres => {
+                if (!btres.ok) notify(btres.status, "Blog was", "deleted");
+            })
+            .then(() => api(`/api/blogs/${id}`, 'DELETE')
+                .then(delBlogRes => notify(delBlogRes.status, "Blog was", "deleted"))
+                .then(() => setTimeout(() => {
+                    history.replace('/blogs')
+                }, 3000))
+            )
+            
     }
 
     const notify = (stat: number, item: string, requestVerb: string) => {

@@ -118,7 +118,3 @@ delimiter $$
 			END IF;
 END $$
 delimiter ;
-
-SELECT * FROM Users;
-SELECT * FROM Users WHERE email = 'me2@example.com';
-SELECT * FROM authtokens;

@@ -6,22 +6,16 @@ import { Link } from 'react-router-dom';
 import TagSelector from '../selectors/TagSelector';
 
 const SingleBlogCard = (props: IBlogs) => {
-    const { title, content, updated_at, id, AuthorName, AuthorEmail } = props[0];
-    console.log(props);
+    const { title, content, updated_at, id, AuthorName, AuthorEmail } = props;
     const [blogtags, updateMyTags] = useState([]);
-
-    // TagSelector component requires a change handler prop, but since these are read-only
-    //  until they're on the edit route, then I don't need to bother with updating state
-    const handleSelectedTagsUpdate: any = (tagsFromChild: any) => '';
 
     useEffect(() => {
         (async () => {
             try {
                 const res = await api(`/api/blogtags/${id}`);
                 let tags = await res.json();
-                // Returning just the data I want without the SQL response since this calls a stored procedure
+                // Parsing out just the data I want without the SQL responses since this calls a stored procedure
                 tags = tags[0].map((tag: IBlogTags) => tag.name);
-                console.log(tags);
                 updateMyTags(tags);
             } catch (error) {
                 console.log(error);
@@ -45,8 +39,8 @@ const SingleBlogCard = (props: IBlogs) => {
                 <p className="text-dark"><em>{content}</em></p>
             </div>
             <div className="card-footer bg-primary">
-                {/* Since I want this card to be readonly when it's not being edited, the event handler does nothing in this component*/}
-                <TagSelector disabled={true} id={id} onSelectChange={handleSelectedTagsUpdate} />
+                {/* Tags to be readonly when it's not being edited, and not render if no tags are on the blog */}
+                {blogtags.length ? <TagSelector disabled={true} id={id} /> : <></>}
                 <div className="row ml-2">Written by {AuthorName}.</div>
                 <div className="row ml-2"><em>Contact:  {AuthorEmail}</em></div>
                 <div className="row ml-2">Last updated {moment(updated_at).startOf('minute').fromNow()}</div>
@@ -63,7 +57,3 @@ const SingleBlogCard = (props: IBlogs) => {
 
 
 export default SingleBlogCard;
-
-
-
-

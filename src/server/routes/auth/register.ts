@@ -7,13 +7,16 @@ const router = express.Router();
 router.post('/', async (req, res, next) => {
     try {
         const dto = req.body;
-        const { firstname, lastname, email, password, roles } = dto;
+        const { firstname, lastname, email, password, /*roles,*/ avatar } = dto;
+        // Not destructuring 'roles' out since it doesn't exist on the frontend /yet/ but may at a later point if I choose to let it be editable there
+        // const roles = dto.roles ? dto.roles : "[\"user\"]"
+        const roles = "['user']";
 
         const isNewUser = await DB.Users.get.user_by_email(email);
         if (!!(isNewUser[0])) return res.status(403).send(`An account using the email address ${email} already exists.`);
         
         const hash = HashPassword(password);
-        const newUser = await DB.Users.do.create(firstname, lastname, email, hash, roles ? roles : "[\"user\"]")
+        const newUser = await DB.Users.do.create(firstname, lastname, email, hash, roles, avatar);
         if (newUser.insertId) {
             res.status(201).json('User was created successfully!');
         } else {

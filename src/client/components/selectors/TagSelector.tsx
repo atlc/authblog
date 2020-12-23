@@ -46,7 +46,9 @@ const TagSelector = (props: TagSelectorProps) => {
     }, [allTags]);
 
     useEffect(() => {
-        onSelectChange(selectedTags);
+        if (onSelectChange) {
+            onSelectChange(selectedTags);
+        }
     }, [selectedTags])
 
     // Updates state with the currently selected tags, triggering the useEffect above to fire the onSelectChange to pass the newest tag array up to the parent
@@ -73,7 +75,7 @@ const TagSelector = (props: TagSelectorProps) => {
 interface TagSelectorProps {
     id?: string;
     disabled: boolean;
-    onSelectChange(a: any): void;
+    onSelectChange?(a: any): void;
 }
 
 export default TagSelector;

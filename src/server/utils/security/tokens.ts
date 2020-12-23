@@ -22,14 +22,14 @@ export const ValidToken = async (token: string) => {
     }
 }
 
-export const InvalidateToken = async (token: string) => {
+// export const InvalidateSingleToken = async (token: string) => {
 
-}
+// }
 
-export const NuclearOption = async () => {
-    // Change config.auth.secret to invalidate ALL tokens, or
-    // DELETE FROM authtokens WHERE id IS NOT NULL;
-}
+// export const NuclearOption = async () => {
+//     // Change config.auth.secret to invalidate ALL tokens, or
+//     // DELETE FROM authtokens WHERE id IS NOT NULL;
+// }
 
 
 

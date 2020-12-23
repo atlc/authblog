@@ -21,13 +21,20 @@ const Login = () => {
         try {
             setRegistering(true);
             const login = await api('/auth/login', 'POST', credentials);
-            const { token, userid, roles } = await login.json();
-            if (token) {
-                SetAccessToken(token, { userid, roles });
-                history.replace('/');
+
+            if (login.ok) {
+                const { token, userid, roles } = await login.json();
+
+                if (token) {
+                    SetAccessToken(token, { userid, roles });
+                    history.replace('/');
+                } else {
+                    alert('There was an error creating your token, please try logging in again.');
+                }
             } else {
-                alert('There was an error authenticating.')
+                alert('Incorrect or nonexistant credentials provided.');
             }
+
         } catch (e) {
             console.log(e);
         } finally {
