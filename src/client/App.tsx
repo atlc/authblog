@@ -6,6 +6,7 @@ import AllBlogs from './views/blogs/AllBlogs';
 import SingleBlog from './views/blogs/SingleBlog';
 import EditableBlog from './views/blogs/EditableBlog';
 import CreateBlog from './views/blogs/CreateBlog';
+import Donate from './views/stripe/Donate';
 import Login from './views/auth/Login';
 import Logout from './views/auth/Logout';
 import Register from './views/auth/Register';
@@ -39,6 +40,9 @@ const App = (props: AppProps) => {
 					</Route>
 					<Route exact path="/register">
 						<Register />
+					</Route>
+					<Route exact path="/donate">
+						<Donate />
 					</Route>
 					<Route path="*">
 						<Home />

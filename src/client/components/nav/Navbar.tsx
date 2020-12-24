@@ -27,6 +27,7 @@ const Navbar = () => {
                         <NB path="/register" text="Register" />
                     </>
                     : <NB path="/logout" text="Log Out" />}
+                <NB path="/donate" text="Donate!" />
                 <p>Current path to aimlessly hope to rerender buttons: "localhost:3000{pathTrigger}"</p>
             </div>
         </nav>
