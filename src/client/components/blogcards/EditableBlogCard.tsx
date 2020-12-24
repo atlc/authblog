@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IBlogs } from '../../utils/types';
-import { api } from '../../utils/api-service';
+import { api, User } from '../../utils/api-service';
 import { ToastContainer, toast } from 'react-toastify';
 import TagSelector from '../selectors/TagSelector';
 import { useHistory } from 'react-router-dom';
@@ -11,30 +11,50 @@ const EditableBlogCard = (props: IBlogs) => {
     const [blogTags, updateBlogTags] = useState(null);
     const history = useHistory();
 
+    useEffect(() => {
+        if (!User || User.userid === null || !User.roles.includes('admin')) {
+            history.replace('/login');
+        }
+    }, [])
+
+
     const handleBlogtextUpdate = (e: React.ChangeEvent<HTMLTextAreaElement>) => updateBlogText(e.target.value);
     const handleSelectedTagsUpdate = (tagsFromChild: any) => updateBlogTags(tagsFromChild); // Grabs the state from the child TagSelector component
     // EZ-PZ way of grabbing the tag values that I want, and creating an array of arrays for bulk-insertion in my SQL statement
     const createBulkFriendlyBlogTagsSQL = (blogID: string) => blogTags.map((t: any) => t.value).map((tagid: string) => [`${blogID}`, tagid]);
 
     const updateBlog = async () => {
-        const body: {} = JSON.stringify({
-            id: id,
-            content: blogText
-        });
+        // If user logs out, localstorage is cleared but until they refresh, this component still retains their info in state and will POST
+        // Quick way to give them the boot again?
+        if (!User || User.userid === null || !User.roles.includes('admin')) {
+            notify(401, "You are", "authorized");
+            setTimeout(() => { history.replace('/login') }, 2000);
+        }
 
-        const updatedBlog = await api('/api/blogs', 'PUT', body);
-        notify(updatedBlog.status, "Blog was", "updated");
-        setTimeout(() => {history.replace('/blogs')}, 3000);
+        const body: {} = { id, content: blogText };
+
+        const updatedBlogRes = await api('/api/blogs', 'PUT', body);
+        notify(updatedBlogRes.status, "Blog content was", "updated");
 
         // Running what should be a PUT as a POST - Instead of having to run multiple PUT queries when multiple tags are selected,
         // when a POST is received at this endpoint it will delete all the BlogTags at that blogid, then run a POST where all the
         // values are bulk-inserted in a single query.
-        const tags_array: {} = JSON.stringify({ blogtags_array: createBulkFriendlyBlogTagsSQL(id) });
+        const tags_array: {} = { blogtags_array: createBulkFriendlyBlogTagsSQL(id) };
 
-        const blogtags = await api(`/api/blogtags/update/${id}`, 'POST', tags_array);
+        const blogTagsRes = await api(`/api/blogtags/update/${id}`, 'POST', tags_array);
+        notify(blogTagsRes.status, "Blog Tags were", "updated");
+
+        setTimeout(() => { history.replace('/blogs') }, 3000);
     }
 
     const deleteBlog = () => {
+        // If user logs out, localstorage is cleared but until they refresh, this component still retains their info in state and will POST
+        // Quick way to give them the boot again?
+        if (!User || User.userid === null || !User.roles.includes('admin')) {
+            notify(401, "You are", "authorized");
+            setTimeout(() => { history.replace('/login') }, 2000);
+        }
+        
         // Synchronous-async code to deal with synchronous database deletions. Ugh 
         api(`/api/blogtags/${id}`, 'DELETE')
             .then(btres => {
@@ -46,7 +66,7 @@ const EditableBlogCard = (props: IBlogs) => {
                     history.replace('/blogs')
                 }, 3000))
             )
-            
+
     }
 
     const notify = (stat: number, item: string, requestVerb: string) => {

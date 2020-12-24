@@ -24,6 +24,12 @@ const CreateBlog = () => {
     const createBulkFriendlyBlogTagsSQL = (blogID: string) => blogTags.map((tag: any) => [`${blogID}`, tag.value])
 
     const createBlog = async () => {
+        // If user logs out, localstorage is cleared but until they refresh, this component still retains their info in state and will POST
+        // Quick way to give them the boot again?
+        if (!User || User.userid === null || !User.roles.includes('user')) {
+            notify(401, 401);
+            setTimeout(() => {history.replace('/login')}, 2000);
+        }
         // Inserts the info into the blog itself
         const body: {} = {
             userid: blogAuthor,

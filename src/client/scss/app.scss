@@ -5,5 +5,13 @@ $theme-colors: (
 
 );
 
-@import '../../../node_modules/react-toastify/dist/ReactToastify.css';
 @import '../../../node_modules/bootstrap/scss/bootstrap.scss';
+
+
+.active-navlink {
+    background-color: rgb(255, 171, 0) !important;
+    color: black !important;
+    font-style: italic;
+}
+
+@import '../../../node_modules/react-toastify/dist/ReactToastify.css';

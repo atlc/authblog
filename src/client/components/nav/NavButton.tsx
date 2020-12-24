@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const NavButton = (props: NavButtonProps) => {
     const { path, text } = props;
     return (
-        <Link className="btn bg-secondary text-white mx-2" to={path}>{text}</Link>
+        <NavLink className="btn btn-secondary text-white mx-2" activeClassName="active-navlink" exact to={path}>{text}</NavLink>
     )
 }
 

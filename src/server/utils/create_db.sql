@@ -118,3 +118,9 @@ delimiter $$
 			END IF;
 END $$
 delimiter ;
+
+UPDATE Users set roles = "['user', 'admin', 'superadmin']" WHERE id = 6;
+SELECT * FROM Users;
+SELECT * FROM Users WHERE email = 'me2@example.com';
+SELECT * FROM authtokens;
+SELECT * from Blogs;

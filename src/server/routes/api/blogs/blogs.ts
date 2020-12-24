@@ -91,8 +91,8 @@ router.post('/', isUser, async (req, res, next) => {
 router.put('/', isAdmin, async (req, res, next) => {
     try {
         const blog = req.body;
-        const { userid, content } = blog;
-        const blogUpdate = await db.Blogs.do.update(userid, content);
+        const { id, content } = blog;
+        const blogUpdate = await db.Blogs.do.update(id, content);
         res.status(200).json(blogUpdate);
     } catch (e) {
         console.log(e);

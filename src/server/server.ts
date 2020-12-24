@@ -1,9 +1,10 @@
 import * as express from 'express';
+import * as path from 'path';
 import * as passport from 'passport';
 import * as morgan from 'morgan';
+import * as compression from 'compression';
 import * as helmet from 'helmet';
 import * as cors from 'cors';
-import * as path from 'path';
 import router from './routes';
 import './middlewares/bearerstrategy';
 import './middlewares/localstrategy';
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(cors());
 app.use(helmet());
+app.use(compression());
 app.use(morgan('combined'));
 
 app.use(router);

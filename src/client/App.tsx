@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Navbar from './components/nav/Navbar';
 import { Home } from './views/Home';
 import AllBlogs from './views/blogs/AllBlogs';
@@ -12,7 +12,7 @@ import Register from './views/auth/Register';
 
 const App = (props: AppProps) => {
 	return (
-		<HashRouter>
+		<BrowserRouter>
 			<Navbar />
 			<div className="container mt-5 pt-3">
 				<Switch>
@@ -25,19 +25,19 @@ const App = (props: AppProps) => {
 					<Route exact path="/blogs">
 						<AllBlogs />
 					</Route>
-					<Route path="/blogs/:id/edit">
+					<Route exact path="/blogs/:id/edit">
 						<EditableBlog />
 					</Route>
-					<Route path="/blogs/:id">
+					<Route exact path="/blogs/:id">
 						<SingleBlog />
 					</Route>
-					<Route path="/login">
+					<Route exact path="/login">
 						<Login />
 					</Route>
-					<Route path="/logout">
+					<Route exact path="/logout">
 						<Logout />
 					</Route>
-					<Route path="/register">
+					<Route exact path="/register">
 						<Register />
 					</Route>
 					<Route path="*">
@@ -45,7 +45,7 @@ const App = (props: AppProps) => {
 					</Route>
 				</Switch>
 			</div>
-		</HashRouter>
+		</BrowserRouter>
 	);
 };
 
