@@ -18,11 +18,12 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cors());
-app.use(helmet.contentSecurityPolicy({
-    directives: {
-        defaultSrc: ["'self' https://*.stripe.com"]
-    }
-}));
+// app.use(helmet.contentSecurityPolicy({
+//     directives: {
+//         defaultSrc: ["'self' https://*.stripe.com"]
+//     }
+// }));
+
 app.use(compression());
 app.use(morgan('combined'));
 

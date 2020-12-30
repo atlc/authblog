@@ -3,29 +3,22 @@ import config from '../../config';
 const stripe = require('stripe')(config.stripe.secret_key);
 const router = express.Router();
 
-// const stripe = new Stripe(config.stripe.secret_key, { apiVersion: "2020-08-27" });
+router.post('/charge', async (req, res) => {
+  try {
+    const donateDTO = req.body;
+    const { token, amount } = donateDTO;
+    const result = await stripe.charges.create({
+      source: token.id,
+      currency: 'usd',
+      amount: amount * 100,
+      description: 'Thanks for the tip!'
+    });
+    // console.log(result);
+    res.status(269).json({ result });
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+})
 
-router.post('/create-checkout-session', async (req: any, res: any) => {
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: [
-      {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: '#FYPM Fee',
-          },
-          unit_amount: 5,
-        },
-        quantity: 1,
-      },
-    ],
-    mode: 'payment',
-    success_url: 'https://example.com/success',
-    cancel_url: 'https://example.com/cancel',
-  });
-
-  res.json({ id: session.id });
-});
 
 export default router;
