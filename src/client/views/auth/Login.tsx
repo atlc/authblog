@@ -33,6 +33,7 @@ const Login = () => {
                 }
             } else {
                 alert('Incorrect or nonexistant credentials provided.');
+                alert(await login.json());
             }
 
         } catch (e) {

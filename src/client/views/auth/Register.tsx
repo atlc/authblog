@@ -33,7 +33,8 @@ const Login = () => {
                 alert('Registration successful!')
                 history.replace('/login');
             } else {
-                alert('There was an error with registration, please ensure all mandatory fields are filled out.')
+                alert('There was an error with registration, please ensure all mandatory fields are filled out.');
+                alert(await register.json());
             }
         } catch (e) {
             console.log(e);
