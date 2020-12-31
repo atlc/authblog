@@ -37,6 +37,13 @@ const Login = () => {
                     timer: 1500,
                     onClose: () => history.replace('/login')
                 });
+            } else if (register.statusCode === 403) {
+                const res = await register.json();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Error.',
+                    text: res.breachNotification
+                })
             } else {
                 const text = await register.json();
                 Swal.fire({
