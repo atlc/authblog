@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IBlogs } from '../../utils/types';
 import { api, User } from '../../utils/api-service';
-import { ToastContainer, toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import TagSelector from '../selectors/TagSelector';
 import { useHistory } from 'react-router-dom';
 
@@ -70,19 +70,18 @@ const EditableBlogCard = (props: IBlogs) => {
     }
 
     const notify = (stat: number, item: string, requestVerb: string) => {
-        const toastOptions = {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-        };
-
         if (stat === 200) {
-            toast.success(`😎 ${item} ${requestVerb}!`, { ...toastOptions, progress: undefined });
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: `😎 ${item} ${requestVerb}!`
+            });
         } else {
-            toast.error(`😞 ${item} not ${requestVerb}, please check server logs for further details.`, { ...toastOptions, progress: undefined });
+            Swal.fire({
+                icon: 'error',
+                title: 'Error.',
+                text: `😞 ${item} not ${requestVerb}, please check server logs for further details.`
+            });
         }
     }
 
@@ -109,17 +108,6 @@ const EditableBlogCard = (props: IBlogs) => {
                     <button className="btn btn-warning m-2 shadow" onClick={deleteBlog}>Delete Blog?</button>
                 </div>
             </div>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
         </>
     );
 }

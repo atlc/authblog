@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { api, User } from '../../utils/api-service';
-import { ToastContainer, toast } from 'react-toastify';
 import TagSelector from '../../components/selectors/TagSelector';
 import { useHistory } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 
 const CreateBlog = () => {
@@ -47,26 +47,26 @@ const CreateBlog = () => {
         const newTags = await api('/api/blogtags', 'POST', tags)
         const blogTagsPostStatus = newTags.status;
 
-        // If both the POST requests return a status of 201, return a successful toast
-        // Otherwise pop up an error toast
+        // If both the POST requests return a status of 201, return a successful Swal
+        // Otherwise pop up an error Swal
         notify(blogPostStatus, blogTagsPostStatus);
     }
 
     const notify = (resStatus: number, resStatus2: number) => {
-        const toastOptions = {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-        };
-
         if (resStatus === 201 && resStatus2 === 201) {
-            toast.success('😎 Blog post was created!', { ...toastOptions, progress: undefined });
-            setTimeout(() => {history.replace('/blogs')}, 3000);
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: `😎 Blog post was created!!`,
+                timer: 2000,
+                onClose: () => history.replace('/blogs')
+            });
         } else {
-            toast.error('😞 Could not create blog, please validate all fields or check server logs for further details.', { ...toastOptions, progress: undefined });
+            Swal.fire({
+                icon: 'error',
+                title: 'Error.',
+                text: '😞 Could not create blog, please validate all fields or check server logs for further details.'
+            });
         }
     }
 
@@ -91,17 +91,6 @@ const CreateBlog = () => {
                     </div>
                 </div>
             </div>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
         </>
     );
 }

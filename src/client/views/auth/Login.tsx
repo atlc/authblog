@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { api, SetAccessToken } from '../../utils/api-service'
+import { api, SetAccessToken } from '../../utils/api-service';
+import Swal from 'sweetalert2';
 
 const Login = () => {
     const [email, updateEmail] = useState('');
@@ -29,11 +30,11 @@ const Login = () => {
                     SetAccessToken(token, { userid, roles });
                     history.replace('/');
                 } else {
-                    alert('There was an error creating your token, please try logging in again.');
+                    Swal.fire({ icon: 'error', title: 'Error.', text: 'There was an error creating your token, please try logging in again.'});
                 }
             } else {
-                alert('Incorrect or nonexistant credentials provided.');
-                alert(await login.json());
+                const text = await login.json();
+                Swal.fire({ icon: 'error', title: 'Incorrect or nonexistant credentials provided.', text });
             }
 
         } catch (e) {

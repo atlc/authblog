@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { api } from '../../utils/api-service'
 
 const Login = () => {
@@ -14,7 +15,7 @@ const Login = () => {
 
 
     const register = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
         if (isRegistering) return;
 
@@ -25,16 +26,24 @@ const Login = () => {
             email,
             password
         };
-    
+
         try {
             setRegistering(true);
             const register = await api('/auth/register', 'POST', body);
             if (register.ok) {
-                alert('Registration successful!')
-                history.replace('/login');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registration successful!',
+                    timer: 1500,
+                    onClose: () => history.replace('/login')
+                });
             } else {
-                alert('There was an error with registration, please ensure all mandatory fields are filled out.');
-                alert(await register.json());
+                const text = await register.json();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Error.',
+                    text: 'Please ensure all mandatory fields are filled out.\n\n' + text
+                })
             }
         } catch (e) {
             console.log(e);
