@@ -28,14 +28,7 @@ const DonateForm = (props: IDonateFormProps) => {
     }
 
     const charge = { token, amount };
-
-    // using default browser fetch instead of my api helper fetch, since that only returns the status
-    // code for not okay responses and I want to use the actual error JSON reponses for meaningful SWAL2 errors
-    const response = await fetch('/stripe/charge', {
-      method: 'POST', 
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(charge)
-    });
+    const response = await api('/stripe/charge', 'POST', charge);
 
     if (response.ok) {
       const session = await response.json();

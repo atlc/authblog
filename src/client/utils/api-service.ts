@@ -22,9 +22,9 @@ export const api = async <T = any>(uri: string, method: string = 'GET', body?: {
     try {
         const res = await fetch(uri, options)    
         if (res.ok) {
-            return <T><unknown>(await res)
+            return <T><unknown>(res);
         } else {
-            return res.status;
+            return <T><unknown>(res);
         }
     } catch (e) {
         console.log(e);
