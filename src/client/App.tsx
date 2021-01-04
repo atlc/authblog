@@ -4,7 +4,8 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
 import Navbar from './components/nav/Navbar';
-import { Home } from './views/Home';
+import { Home } from './views/common/Home';
+import Contact from './views/common/Contact';
 import AllBlogs from './views/blogs/AllBlogs';
 import SingleBlog from './views/blogs/SingleBlog';
 import EditableBlog from './views/blogs/EditableBlog';
@@ -49,6 +50,9 @@ const App = (props: AppProps) => {
 					</Route>
 					<Route exact path="/register">
 						<Register />
+					</Route>
+					<Route exact path="/contact">
+						<Contact />
 					</Route>
 					<Route exact path="/donate">
 						<Elements stripe={stripePromise}>
