@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { HashPassword } from '../../utils/security/passwords';
-import * as validate from '@atlc/hibp'
+import { validate } from '@atlc/hibp'
 import DB from '../../db';
 
 const router = express.Router();
@@ -17,9 +17,7 @@ router.post('/', async (req, res, next) => {
         if (!!(isNewUser[0])) return res.status(403).send(`An account using the email address ${email} already exists.`);
 
         // validate function returns the number of matches if it's a bad password, otherwise if it's unique/unbreached it returns false
-        const validation: ValidationResults = await validate(password);
-
-        console.log(`\n\n\n${JSON.stringify(validation)}\n\n\n`)
+        const validation = await validate(password)
 
         if (validation.isPwned) {
             res.status(403).json({ breachNotification: `Bad password! 😠😠😠 That has been found in ${validation.breaches.toLocaleString()} account breaches!` });
@@ -36,11 +34,6 @@ router.post('/', async (req, res, next) => {
         console.log(e);
         res.status(500).send(e);
     }
-})
-
-interface ValidationResults {
-    isPwned: boolean;
-    breaches: number;
-}
+});
 
 export default router;
