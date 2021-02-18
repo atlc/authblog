@@ -88,6 +88,17 @@ delimiter $$
 END $$
 delimiter ;
 
+DROP PROCEDURE spBlogTagz;
+delimiter //
+CREATE PROCEDURE spBlogTagz(blogid int)
+	BEGIN
+		SELECT name as tagname, id as tagid, bt.blogid as blogid FROM Tags
+		JOIN BlogTags bt ON id = bt.tagid
+		WHERE bt.blogid = blogid;
+    END //
+delimiter ; 
+call spBlogTagz(5);
+
 
 DROP PROCEDURE IF EXISTS spAllBlogTags;
 delimiter $$

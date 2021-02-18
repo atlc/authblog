@@ -9,8 +9,6 @@ const create_new = async (title: string, content: string, userid: string) => Que
 const destroy = async (id: string) => Query('DELETE from Blogs where id = ?', [id]);
 const update = async (id: string, content: string) => Query('UPDATE Blogs SET ? where ?', [{content}, {id}]);
 
-
-
 export default {
     get: {
         all,
